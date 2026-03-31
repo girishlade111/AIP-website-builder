@@ -5,11 +5,22 @@ import { BuilderNavbar } from '@/components/builder/BuilderNavbar';
 import { PromptSidebar } from '@/components/builder/PromptSidebar';
 import { PreviewPanel } from '@/components/builder/PreviewPanel';
 import { useBuilder } from '@/hooks/useBuilder';
+import { Monitor } from 'lucide-react';
 
 export default function BuilderPage() {
   const { state, actions, canSubmit } = useBuilder();
   const saveButtonRef = useRef<HTMLButtonElement>(null);
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -33,6 +44,18 @@ export default function BuilderPage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [canSubmit, actions, isEditingName]);
+
+  if (isMobile) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-background p-8">
+        <Monitor className="w-16 h-16 text-text-muted mb-4" />
+        <h1 className="text-xl font-semibold text-white mb-2">Desktop Required</h1>
+        <p className="text-text-muted text-center max-w-md">
+          LadeStack Builder works best on desktop. Please switch to a larger screen (minimum 1024px width) to continue.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
@@ -72,7 +95,9 @@ export default function BuilderPage() {
       <button
         ref={saveButtonRef}
         className="hidden"
-        onClick={() => console.log('Save triggered')}
+        onClick={() => {
+          // Save functionality would go here
+        }}
       />
     </div>
   );
