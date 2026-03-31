@@ -6,7 +6,7 @@ import { PreviewPanel } from '@/components/builder/PreviewPanel';
 import { useBuilder } from '@/hooks/useBuilder';
 
 export default function BuilderPage() {
-  const { state, actions } = useBuilder();
+  const { state, actions, canSubmit } = useBuilder();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
@@ -26,6 +26,7 @@ export default function BuilderPage() {
             onPromptChange={actions.setPrompt}
             onProjectTypeChange={actions.setProjectType}
             onSubmit={actions.submitPrompt}
+            canSubmit={canSubmit}
           />
         </aside>
 

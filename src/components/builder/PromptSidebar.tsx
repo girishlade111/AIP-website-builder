@@ -21,6 +21,7 @@ interface PromptSidebarProps {
   onPromptChange: (text: string) => void;
   onProjectTypeChange: (type: ProjectType) => void;
   onSubmit: () => void;
+  canSubmit: boolean;
 }
 
 const projectTypes: { type: ProjectType; label: string; icon: React.ElementType }[] = [
@@ -52,6 +53,7 @@ export function PromptSidebar({
   onPromptChange,
   onProjectTypeChange,
   onSubmit,
+  canSubmit,
 }: PromptSidebarProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -156,11 +158,13 @@ export function PromptSidebar({
           <span className="text-xs text-text-muted">⌘ Enter to send</span>
           <button
             onClick={onSubmit}
-            disabled={isGenerating || !prompt.trim()}
+            disabled={!canSubmit}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               isGenerating
                 ? 'bg-[#6d28d9] text-white cursor-not-allowed'
-                : 'bg-accent text-white hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed'
+                : canSubmit
+                  ? 'bg-accent text-white hover:bg-accent/90'
+                  : 'bg-accent text-white opacity-50 cursor-not-allowed'
             }`}
           >
             {isGenerating ? (
