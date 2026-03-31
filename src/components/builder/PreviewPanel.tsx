@@ -10,7 +10,7 @@ import {
   Copy,
   Loader2,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MockPreview } from './MockPreview';
 
 type Tab = 'preview' | 'code' | 'responsive';
@@ -97,7 +97,12 @@ function GeneratingState() {
 
 function BrowserChrome() {
   return (
-    <div className="h-9 bg-surface border-b border-border-custom flex items-center px-3">
+    <motion.div
+      initial={{ y: -10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      className="h-9 bg-surface border-b border-border-custom flex items-center px-3"
+    >
       <div className="flex items-center gap-1.5">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
@@ -109,7 +114,7 @@ function BrowserChrome() {
         </div>
       </div>
       <RefreshCw className="w-3.5 h-3.5 text-text-muted" />
-    </div>
+    </motion.div>
   );
 }
 
@@ -193,64 +198,80 @@ export function PreviewPanel({
       <div className="flex-1 overflow-hidden">
         {isGenerating ? (
           <GeneratingState />
-        ) : activeTab === 'code' ? (
-          hasContent ? (
-            <div className="h-full bg-[#0d0d0d] overflow-y-auto">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border-custom">
-                <span className="text-xs text-text-muted">App.tsx</span>
-                <button
-                  onClick={handleCopy}
-                  className="flex items-center gap-1.5 text-text-muted hover:text-white transition-colors"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span className="text-xs">{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
-              </div>
-              <div className="p-6 font-mono text-sm">
-                <pre className="flex">
-                  <span className="text-text-muted/30 select-none mr-4 text-right min-w-[32px]">
-                    {mockCode.split('\n').map((_, i) => (
-                      <span key={i} className="block leading-6">
-                        {i + 1}
-                      </span>
-                    ))}
-                  </span>
-                  <code className="text-primary leading-6 whitespace-pre">
-                    {mockCode}
-                  </code>
-                </pre>
-              </div>
-            </div>
-          ) : (
-            <EmptyState />
-          )
-        ) : hasContent ? (
-          <div className="h-full bg-gray-100 overflow-auto">
-            <BrowserChrome />
+        ) : (
+          <AnimatePresence mode="wait">
             <motion.div
+              key={activeTab}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`transition-all duration-300 ${getWidthClass()}`}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="h-full"
             >
-              {deviceView === 'mobile' && (
-                <div className="bg-white min-h-full rounded-[24px] overflow-hidden shadow-lg">
-                  <MockPreview />
+              {activeTab === 'code' ? (
+                hasContent ? (
+                  <div className="h-full bg-[#0d0d0d] overflow-y-auto">
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-border-custom">
+                      <span className="text-xs text-text-muted">App.tsx</span>
+                      <button
+                        onClick={handleCopy}
+                        className={`flex items-center gap-1.5 transition-colors ${
+                          copied ? 'text-emerald-400' : 'text-text-muted hover:text-white'
+                        }`}
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span className="text-xs">{copied ? 'Copied!' : 'Copy'}</span>
+                      </button>
+                    </div>
+                    <div className="p-6 font-mono text-sm">
+                      <pre className="flex">
+                        <span className="text-text-muted/30 select-none mr-4 text-right min-w-[32px]">
+                          {mockCode.split('\n').map((_, i) => (
+                            <span key={i} className="block leading-6">
+                              {i + 1}
+                            </span>
+                          ))}
+                        </span>
+                        <code className="text-primary leading-6 whitespace-pre">
+                          {mockCode}
+                        </code>
+                      </pre>
+                    </div>
+                  </div>
+                ) : (
+                  <EmptyState />
+                )
+              ) : hasContent ? (
+                <div className="h-full bg-gray-100 overflow-auto">
+                  <BrowserChrome />
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className={`transition-all duration-300 ${getWidthClass()}`}
+                  >
+                    {deviceView === 'mobile' && (
+                      <div className="bg-white min-h-full rounded-[24px] overflow-hidden shadow-lg">
+                        <MockPreview />
+                      </div>
+                    )}
+                    {deviceView === 'tablet' && (
+                      <div className="bg-white min-h-full shadow-lg">
+                        <MockPreview />
+                      </div>
+                    )}
+                    {deviceView === 'desktop' && (
+                      <div className="bg-white min-h-full">
+                        <MockPreview />
+                      </div>
+                    )}
+                  </motion.div>
                 </div>
-              )}
-              {deviceView === 'tablet' && (
-                <div className="bg-white min-h-full shadow-lg">
-                  <MockPreview />
-                </div>
-              )}
-              {deviceView === 'desktop' && (
-                <div className="bg-white min-h-full">
-                  <MockPreview />
-                </div>
+              ) : (
+                <EmptyState />
               )}
             </motion.div>
-          </div>
-        ) : (
-          <EmptyState />
+          </AnimatePresence>
         )}
       </div>
     </div>

@@ -12,7 +12,23 @@ export function Hero() {
   };
 
   return (
-    <section className="pt-20 pb-16 flex flex-col items-center text-center">
+    <section className="pt-20 pb-16 flex flex-col items-center text-center relative overflow-hidden">
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-radial-gradient from-accent/10 to-transparent pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%)',
+        }}
+        animate={{
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 4,
+          ease: 'easeInOut',
+          repeat: Infinity,
+          repeatType: 'reverse',
+        }}
+      />
+
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

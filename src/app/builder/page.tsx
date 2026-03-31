@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { BuilderNavbar } from '@/components/builder/BuilderNavbar';
 import { PromptSidebar } from '@/components/builder/PromptSidebar';
 import { PreviewPanel } from '@/components/builder/PreviewPanel';
@@ -7,6 +8,31 @@ import { useBuilder } from '@/hooks/useBuilder';
 
 export default function BuilderPage() {
   const { state, actions, canSubmit } = useBuilder();
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const [isEditingName, setIsEditingName] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        if (canSubmit) {
+          actions.submitPrompt();
+        }
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        saveButtonRef.current?.click();
+      }
+
+      if (e.key === 'Escape' && isEditingName) {
+        setIsEditingName(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canSubmit, actions, isEditingName]);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-background">
@@ -14,6 +40,7 @@ export default function BuilderPage() {
         projectName={state.projectName}
         onProjectNameChange={actions.setProjectName}
         isGenerating={state.isGenerating}
+        onEditingChange={setIsEditingName}
       />
       
       <div className="flex flex-1 overflow-hidden">
@@ -41,6 +68,12 @@ export default function BuilderPage() {
           />
         </main>
       </div>
+
+      <button
+        ref={saveButtonRef}
+        className="hidden"
+        onClick={() => console.log('Save triggered')}
+      />
     </div>
   );
 }

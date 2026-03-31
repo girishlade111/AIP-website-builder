@@ -8,12 +8,14 @@ interface BuilderNavbarProps {
   projectName: string;
   onProjectNameChange: (name: string) => void;
   isGenerating: boolean;
+  onEditingChange?: (isEditing: boolean) => void;
 }
 
 export function BuilderNavbar({
   projectName,
   onProjectNameChange,
   isGenerating,
+  onEditingChange,
 }: BuilderNavbarProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +28,7 @@ export function BuilderNavbar({
   const handleNameClick = () => {
     setEditValue(projectName);
     setIsEditing(true);
+    onEditingChange?.(true);
   };
 
   const handleNameSave = () => {
@@ -34,6 +37,7 @@ export function BuilderNavbar({
       onProjectNameChange(trimmed);
     }
     setIsEditing(false);
+    onEditingChange?.(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -80,19 +84,35 @@ export function BuilderNavbar({
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="flex items-center gap-2 px-3 py-1.5 border border-border-custom text-text-muted hover:text-white rounded-lg transition-colors">
-          <Download className="w-4 h-4" />
-          <span>Export</span>
-        </button>
-        <button className="flex items-center gap-2 px-3 py-1.5 border border-border-custom text-text-muted hover:text-white rounded-lg transition-colors">
-          <Save className="w-4 h-4" />
-          <span>Save</span>
-        </button>
+        <div className="relative group">
+          <button className="flex items-center gap-2 px-3 py-1.5 border border-border-custom text-text-muted hover:text-white rounded-lg transition-colors">
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+          </button>
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-border-custom text-xs text-text-muted rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Export ZIP
+          </div>
+        </div>
+        <div className="relative group">
+          <button className="flex items-center gap-2 px-3 py-1.5 border border-border-custom text-text-muted hover:text-white rounded-lg transition-colors">
+            <Save className="w-4 h-4" />
+            <span>Save</span>
+          </button>
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-border-custom text-xs text-text-muted rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            ⌘S
+          </div>
+        </div>
         <button className="flex items-center gap-2 px-3 py-1.5 bg-accent hover:bg-[#6d28d9] text-white rounded-lg transition-colors">
           <Share2 className="w-4 h-4" />
           <span>Share</span>
         </button>
       </div>
+
+      {isGenerating && (
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden">
+          <div className="h-full w-full bg-gradient-to-r from-accent to-accent-light animate-progress" />
+        </div>
+      )}
     </nav>
   );
 }

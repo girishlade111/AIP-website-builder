@@ -113,8 +113,8 @@ export function PromptSidebar({
               <div key={message.id}>
                 {message.role === 'user' ? (
                   <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="flex justify-end"
                   >
                     <div className="max-w-[85%] px-4 py-3 bg-accent/20 border border-accent/30 text-sm text-white rounded-2xl rounded-tr-sm">
@@ -123,8 +123,8 @@ export function PromptSidebar({
                   </motion.div>
                 ) : (
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="flex items-start"
                   >
                     <div className="w-6 h-6 rounded-full bg-border-custom flex items-center justify-center flex-shrink-0">
@@ -152,33 +152,38 @@ export function PromptSidebar({
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           placeholder="Describe your website..."
-          className="w-full min-[80px] max-h-[160px] p-3 bg-surface border border-border-custom rounded-xl text-sm text-white placeholder:text-text-muted resize-none focus:border-accent focus:outline-none"
+          className="w-full min-[80px] max-h-[160px] p-3 bg-surface border border-border-custom rounded-xl text-sm text-white placeholder:text-text-muted resize-none focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/20 focus:shadow-[0_0_12px_rgba(124,58,237,0.2)] transition-all"
         />
         <div className="flex items-center justify-between mt-3">
           <span className="text-xs text-text-muted">⌘ Enter to send</span>
-          <button
-            onClick={onSubmit}
-            disabled={!canSubmit}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              isGenerating
-                ? 'bg-[#6d28d9] text-white cursor-not-allowed'
-                : canSubmit
-                  ? 'bg-accent text-white hover:bg-accent/90'
-                  : 'bg-accent text-white opacity-50 cursor-not-allowed'
-            }`}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Generating...</span>
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4" />
-                <span>Build</span>
-              </>
+          <div className="relative">
+            {isGenerating && (
+              <div className="absolute inset-0 rounded-lg border-2 border-accent animate-pulse-ring pointer-events-none" />
             )}
-          </button>
+            <button
+              onClick={onSubmit}
+              disabled={!canSubmit}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                isGenerating
+                  ? 'bg-[#6d28d9] text-white cursor-not-allowed'
+                  : canSubmit
+                    ? 'bg-accent text-white hover:bg-accent/90'
+                    : 'bg-accent text-white opacity-50 cursor-not-allowed'
+              }`}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4" />
+                  <span>Build</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
