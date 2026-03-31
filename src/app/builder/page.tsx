@@ -1,6 +1,7 @@
 'use client';
 
 import { BuilderNavbar } from '@/components/builder/BuilderNavbar';
+import { PromptSidebar } from '@/components/builder/PromptSidebar';
 import { useBuilder } from '@/hooks/useBuilder';
 
 export default function BuilderPage() {
@@ -15,12 +16,18 @@ export default function BuilderPage() {
       />
       
       <div className="flex flex-1 overflow-hidden">
-        {/* LEFT PANEL - PromptSidebar will go here */}
         <aside className="w-[380px] border-r border-border-custom bg-surface overflow-y-auto">
-          {/* TODO: Add PromptSidebar component */}
+          <PromptSidebar
+            prompt={state.prompt}
+            messages={state.messages}
+            isGenerating={state.isGenerating}
+            projectType={state.projectType}
+            onPromptChange={actions.setPrompt}
+            onProjectTypeChange={actions.setProjectType}
+            onSubmit={actions.submitPrompt}
+          />
         </aside>
 
-        {/* RIGHT PANEL - PreviewPanel will go here */}
         <main className="flex-1 bg-background overflow-y-auto">
           {/* TODO: Add PreviewPanel component */}
         </main>
