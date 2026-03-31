@@ -2,6 +2,7 @@
 
 import { BuilderNavbar } from '@/components/builder/BuilderNavbar';
 import { PromptSidebar } from '@/components/builder/PromptSidebar';
+import { PreviewPanel } from '@/components/builder/PreviewPanel';
 import { useBuilder } from '@/hooks/useBuilder';
 
 export default function BuilderPage() {
@@ -28,8 +29,15 @@ export default function BuilderPage() {
           />
         </aside>
 
-        <main className="flex-1 bg-background overflow-y-auto">
-          {/* TODO: Add PreviewPanel component */}
+        <main className="flex-1 bg-background overflow-hidden">
+          <PreviewPanel
+            activeTab={state.activeTab}
+            deviceView={state.deviceView}
+            isGenerating={state.isGenerating}
+            hasContent={state.generatedCode !== ''}
+            onTabChange={actions.setActiveTab}
+            onDeviceChange={actions.setDeviceView}
+          />
         </main>
       </div>
     </div>
